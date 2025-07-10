@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Legal Document Analyzer</title>
+  <link rel="stylesheet" href="Home.css">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(120deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .glass-card {
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);
+      border-radius: 24px;
+      padding: 2.5rem 2.2rem 2rem 2.2rem;
+      margin-top: 5vh;
+      margin-bottom: 2.5rem;
+      max-width: 480px;
+      width: 95vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1.5px solid #e3e8ee;
+    }
+    .main-title {
+      color: #2a3a5c;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+      letter-spacing: 1.5px;
+      text-align: center;
+      text-shadow: 0 2px 8px #e3e8ee;
+    }
+    .subtitle {
+      color: #4e5d78;
+      font-size: 1.15rem;
+      margin-bottom: 2.2rem;
+      text-align: center;
+      font-weight: 500;
+    }
+    .custom-file-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f7fafc;
+      border: 1.5px solid #bfc9d9;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-size: 1.08rem;
+      color: #2a3a5c;
+      cursor: pointer;
+      margin-bottom: 1.2rem;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border 0.2s, background 0.2s;
+    }
+    .custom-file-label:hover {
+      border: 1.5px solid #4e54c8;
+      background: #e9eafc;
+    }
+    #uploadBtn {
+      background: linear-gradient(90deg, #2a3a5c 60%, #4e54c8 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 2.2rem;
+      font-size: 1.13rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 2.2rem;
+      box-shadow: 0 2px 8px #bfc9d9;
+      transition: background 0.2s;
+    }
+    #uploadBtn:hover {
+      background: linear-gradient(90deg, #4e54c8 60%, #2a3a5c 100%);
+    }
+    #downloadBtn {
+      margin-left: 0.7rem;
+      background: linear-gradient(90deg, #4e54c8 60%, #2a3a5c 100%);
+      color: #fff;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 1.7rem;
+      box-shadow: 0 2px 8px #bfc9d9;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #downloadBtn:hover {
+      background: linear-gradient(90deg, #2a3a5c 60%, #4e54c8 100%);
+    }
+    #output {
+      border: 2.5px solid #4e54c8;
+      background: #f7faff;
+      box-shadow: 0 2px 12px #bfc9d9, 0 0 0 4px #e9eafc inset;
+      color: #2a3a5c;
+      border-radius: 12px;
+      padding: 1.2rem 1rem;
+      margin-bottom: 2rem;
+      min-height: 60px;
+      width: 100%;
+      max-width: 420px;
+      word-break: break-word;
+      font-size: 1.08rem;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    #spinner {
+      display: none;
+      text-align: center;
+      margin: 1.2rem 0;
+    }
+    #spinner div {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      border: 4px solid #4e54c8;
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    #spinner div + div {
+      color: #4e54c8;
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: #f7fafc;
+      box-shadow: 0 2px 12px #e3e8ee;
+      padding: 0.7rem 1rem 0.7rem 1rem;
+      margin-top: 0;
+      border-radius: 0 0 24px 24px;
+      width: 100%;
+      max-width: 480px;
+      z-index: 100;
+      position: relative;
+    }
+    .bottom-bar input {
+      flex: 1;
+      min-width: 0;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      border: 1.5px solid #bfc9d9;
+      font-size: 1.08rem;
+      background: #fff;
+      color: #2a3a5c;
+      box-sizing: border-box;
+    }
+    .bottom-bar button {
+      background: linear-gradient(90deg, #2a3a5c 60%, #4e54c8 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 1.7rem;
+      font-size: 1.13rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #bfc9d9;
+      transition: background 0.2s, color 0.2s;
+    }
+    .bottom-bar button:hover {
+      background: linear-gradient(90deg, #4e54c8 60%, #2a3a5c 100%);
+      color: #fff;
+    }
+    @media (max-width: 600px) {
+      .glass-card { padding: 1.2rem 0.5rem 1.2rem 0.5rem; }
+      .main-title { font-size: 1.5rem; }
+      .subtitle { font-size: 0.98rem; }
+      #output { padding: 0.7rem 0.3rem; font-size: 0.98rem; }
+      .bottom-bar input { width: 40vw; font-size: 0.98rem; }
+      .bottom-bar button { font-size: 0.98rem; padding: 0.7rem 1rem; }
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    .summary-toggle {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      color: #4e54c8;
+      margin-bottom: 0.5rem;
+      user-select: none;
+    }
+    .summary-arrow {
+      font-size: 1.2rem;
+      margin-right: 0.5rem;
+      transition: transform 0.2s;
+    }
+    .summary-collapsed .summary-arrow {
+      transform: rotate(-90deg);
+    }
+    .summary-content {
+      display: block;
+      margin-bottom: 1.2rem;
+    }
+    .summary-collapsed .summary-content {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-card">
+    <div class="main-title">Legal Document Analyzer</div>
+    <div class="subtitle">Upload your legal document (PDF) for instant clause extraction, smart summaries, and Q&amp;A. <br> <span style="color:#4e54c8;font-size:0.98rem;">Your privacy is respected.</span></div>
+    <label for="pdfInput" class="custom-file-label">
+      <span id="fileLabelText">Choose PDF file</span>
+      <input type="file" id="pdfInput" accept="application/pdf" style="display:none;">
+    </label>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0.7rem;margin-bottom:0.7rem;width:100%;max-width:420px;">
+      <button id="uploadBtn">Upload & Analyze</button>
+      <button id="downloadBtn">Download Results</button>
+    </div>
+    <div id="output" style="border:2.5px solid #4e54c8;background:#f7faff;box-shadow:0 2px 12px #bfc9d9,0 0 0 4px #e9eafc inset;color:#2a3a5c;border-radius:12px;padding:1.2rem 1rem;margin-bottom:2rem;min-height:60px;word-break:break-word;font-size:1.08rem;transition:border 0.2s,box-shadow 0.2s;"></div>
+    <div id="spinner" style="display:none;text-align:center;margin:0.7rem 0;">
+      <div style="display:inline-block;width:36px;height:36px;border:4px solid #4e54c8;border-top:4px solid #fff;border-radius:50%;animation:spin 1s linear infinite;"></div>
+      <div style="color:#4e54c8;font-size:1.1rem;margin-top:0.5rem;">Analyzing...</div>
+    </div>
+    <div id="chat-section" style="width:100%;max-width:480px;margin:0.7rem auto 0 auto;">
+      <div class="bottom-bar" style="border-radius: 0 0 24px 24px; max-width:480px; width:100%; margin-bottom:0; margin-top:-1.2rem; box-shadow:0 2px 12px #e3e8ee;">
+        <input type="text" id="chatInput" placeholder="Ask your doubts..." style="flex:1; min-width:0;">
+        <button id="sendBtn">Send</button>
+        <button id="helpBtn" title="Help" style="margin-left:0.5rem;background:#fff;color:#4e54c8;font-weight:700;border:none;border-radius:8px;padding:0.7rem 1.2rem;box-shadow:0 2px 8px #bfc9d9;">?</button>
+      </div>
+      <div id="chat-history" style="width:100%;max-width:420px;min-height:80px;max-height:220px;overflow-y:auto;background:#f7fafc;border-radius:12px;padding:1rem 1rem 0.5rem 1rem;margin-top:1.2rem;box-shadow:0 2px 12px #e3e8ee;"></div>
+      <style>
+        .chat-bubble {
+          margin-bottom: 0.7rem;
+          padding: 0.7rem 1.1rem;
+          border-radius: 16px;
+          max-width: 90%;
+          word-break: break-word;
+          font-size: 1.08rem;
+          box-shadow: 0 2px 8px #e3e8ee;
+          background: #e9eafc;
+          color: #2a3a5c;
+          text-align: left;
+        }
+        .chat-bubble.user {
+          background: #4e54c8;
+          color: #fff;
+          margin-left: auto;
+          text-align: right;
+        }
+        .chat-bubble.bot {
+          background: #f7fafc;
+          color: #2a3a5c;
+          margin-right: auto;
+          text-align: left;
+          border: 2.5px solid #2ee59d !important;
+          box-shadow: 0 0 0 4px #e9fdf5 inset, 0 2px 8px #bfc9d9;
+        }
+      </style>
+    </div>
+    <!-- Help/FAQ Modal -->
+    <div id="help-modal" style="display:none;position:absolute;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,34,28,0.85);backdrop-filter:blur(2px);justify-content:center;align-items:center;border-radius:24px;">
+      <div style="background:#fff;border-radius:16px;max-width:400px;width:90vw;padding:2.2rem 1.5rem 1.5rem 1.5rem;box-shadow:0 8px 32px #0005;text-align:left;position:relative;">
+        <div style="font-size:1.5rem;color:#4e54c8;font-weight:700;margin-bottom:0.7rem;letter-spacing:1px;">Help & FAQ</div>
+        <ul style="color:#2a3a5c;font-size:1.08rem;line-height:1.7;padding-left:1.1rem;">
+          <li>Upload a PDF legal document to analyze its clauses and get summaries.</li>
+          <li>Click a clause summary to expand and view the full text.</li>
+          <li>Ask questions about the document in the chat bar below.</li>
+          <li>Download the results as PDF/CSV for your records.</li>
+          <li>We do not store your data. For critical documents, consult your lawyer.</li>
+        </ul>
+        <button id="close-help" style="background:#4e54c8;color:#fff;font-weight:600;font-size:1.1rem;padding:0.6rem 2.2rem;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px #0002;transition:background 0.2s;margin-top:1rem;">Close</button>
+      </div>
+    </div>
+    <!-- Modal Disclaimer INSIDE CARD -->
+    <div id="disclaimer-modal" style="display:none;position:absolute;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,34,28,0.85);backdrop-filter:blur(2px);justify-content:center;align-items:center;border-radius:24px;">
+      <div style="background:#fff;border-radius:16px;max-width:400px;width:90vw;padding:2.2rem 1.5rem 1.5rem 1.5rem;box-shadow:0 8px 32px #0005;text-align:center;position:relative;">
+        <div style="font-size:2.1rem;color:#2ee59d;font-weight:700;margin-bottom:0.7rem;letter-spacing:1px;">Disclaimer</div>
+        <div style="color:#00332e;font-size:1.08rem;margin-bottom:1.2rem;line-height:1.6;">
+          We <b>do not store</b> any uploaded information. If your document contains highly sensitive or critical information, please avoid uploading it.<br><br>
+          <b>Always cross-verify</b> results with your legal advisor or lawyer.
+        </div>
+        <button id="close-disclaimer" style="background:#2ee59d;color:#00332e;font-weight:600;font-size:1.1rem;padding:0.6rem 2.2rem;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px #0002;transition:background 0.2s;">I Understand</button>
+      </div>
+    </div>
+    <!-- Footer Disclaimer INSIDE CARD -->
+    <div style="width:100%;text-align:center;color:#4e5d78;background:transparent;font-size:1.08rem;padding:1.1rem 0 0.2rem 0;letter-spacing:0.2px;">
+      <span style="font-weight:600;color:#4e54c8;">Disclaimer:</span> This tool is for informational purposes only. Always cross-verify results with your lawyer.
+    </div>
+  </div>
+  <script src="Homie.js"></script>
+  <script>
+    // Show modal disclaimer on page load (now inside card)
+    window.onload = function() {
+      document.getElementById('disclaimer-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      document.getElementById('close-disclaimer').onclick = function() {
+        document.getElementById('disclaimer-modal').style.display = 'none';
+        document.body.style.overflow = '';
+      };
+    };
+    // Custom file input label logic
+    const pdfInput = document.getElementById('pdfInput');
+    const fileLabelText = document.getElementById('fileLabelText');
+    if (pdfInput && fileLabelText) {
+      pdfInput.addEventListener('change', function() {
+        fileLabelText.textContent = pdfInput.files.length ? pdfInput.files[0].name : 'Choose PDF file';
+      });
+    }
+  </script>
+</body>
+</html>
