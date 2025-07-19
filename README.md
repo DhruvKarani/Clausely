@@ -1,6 +1,6 @@
-📚 What is LegalDocAnalyzer?
+📚 What is Clausely?
 
-**LegalDocAnalyzer** is an AI-powered tool that helps users intelligently analyze legal documents.  
+**Clausely** is an AI-powered tool that helps users intelligently analyze legal documents.  
 It extracts clauses, classifies them using ML/NLP models, summarizes the document’s intent, and even provides an integrated chatbot for real-time legal Q&A.
 
 ![Screenshot 2025-07-10 003912](https://github.com/user-attachments/assets/6bc8985c-8e57-491d-a12c-abb7a055172f)
